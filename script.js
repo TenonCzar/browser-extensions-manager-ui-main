@@ -26,31 +26,21 @@ function fetchItems() {
     .then((data) =>
       data.forEach((extension) => {
         const div = document.createElement("div");
-        const head = document.createElement("div");
-        const text = document.createElement("div");
-        const actions = document.createElement("div");
-        const btn = document.createElement("button");
-        const img = document.createElement("img");
-        const checkbox = document.createElement("label");
         const checkboxId = `counter${count}`;
-        img.src = extension.logo;
-        text.innerHTML = `<h3 class="name">${extension.name}</h3>${extension.description}`;
-        checkbox.innerHTML = `<input type="checkbox" name="mode" id="${checkboxId}" class="checkbox">`;
-        checkbox.htmlFor = `${checkboxId}`;
-        checkbox.className = "mode-toggle";
-        actions.className = "actions";
-        btn.innerText = "Remove";
-        btn.className = "remove";
-        text.className = "desc";
 
-        div.append(head);
-        head.append(img);
-        head.append(text);
-        actions.append(btn);
-        actions.append(checkbox);
-        div.append(actions);
+        div.innerHTML = `<div class='head'><img src='${extension.logo}' alt='${extension.description}' />
+        <div>
+        <h3 class="name">${extension.name}</h3>${extension.description}
+        </div>
+        </div>
+        <div class='actions'>
+        <button class='remove'>Remove</button>
+        <label class='mode-toggle'>
+        <input type="checkbox" name="mode" id="${checkboxId}" class="checkbox" />
+        </label>
+        </div>`;
+
         div.className = `item ${extension.isActive}`;
-        head.className = "head";
         function checkTheme() {
           if (document.body.classList.contains("dark")) {
             div.classList.add("dark");
@@ -68,23 +58,7 @@ function fetchItems() {
 
         container.insertAdjacentElement("beforeend", div);
         count++;
-
-        const allItems = container.querySelectorAll(".item");
-        allItems.forEach((item) => {
-          const cb = item.querySelector(".checkbox");
-          if (item.classList.contains("true")) {
-            cb.checked = true;
-          }
-        });
-
-        btn.addEventListener("click", (item) => {
-          const parentItem = item.target.closest(".item");
-          lo(parentItem);
-        });
-        function lo(kini) {
-          div.remove();
-        }
-
+        actionBtns();
         checkTheme();
         const toggle = document.querySelectorAll(".checkbox");
         toggle.forEach((cb) => {
@@ -101,6 +75,24 @@ function fetchItems() {
         });
       })
     );
+}
+
+function actionBtns() {
+  const allItems = container.querySelectorAll(".item");
+  allItems.forEach((item) => {
+    const cb = item.querySelector(".checkbox");
+    if (item.classList.contains("true")) {
+      cb.checked = true;
+    }
+  });
+  const btn = container.querySelectorAll(".remove");
+  btn.forEach((bt) => {
+    bt.addEventListener("click", (item) => {
+      const parentItem = item.target.closest(".item");
+      console.log(parentItem);
+      parentItem.remove();
+    });
+  });
 }
 
 function filterItems() {
